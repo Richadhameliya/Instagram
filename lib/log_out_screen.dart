@@ -45,7 +45,7 @@ class LogOutScreen extends StatelessWidget {
                       ));
                 },
                 child: Text(
-                  "Saved",
+                  "Saved  ",
                   style: TextStyle(fontSize: 20),
                 ),
               ),
