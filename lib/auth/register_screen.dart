@@ -50,7 +50,7 @@ class RegistrationScreen extends StatelessWidget {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => const BottomNavBar(),
+              builder: (context) => BottomNavBar(),
             ),
           );
         }

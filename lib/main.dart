@@ -8,13 +8,13 @@ import 'auth/login_screen.dart';
 import 'auth/register_screen.dart';
 import 'bottom_bar.dart';
 import 'controller/home_controller.dart';
+import 'demo.dart';
 import 'insta_home.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await GetStorage.init();
-  Get.put(HomeController());
   runApp(MyApp());
 }
 
@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       home: UId == null ? LogInScreen() : BottomNavBar(),
-      // home: Home(),
+      //home: StoriesScreen(),
       // home: RegistrationScreen(),
     );
   }
