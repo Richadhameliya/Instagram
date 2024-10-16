@@ -641,7 +641,7 @@ class HomeController extends GetxController {
                 .listen((QuerySnapshot snapshot) {
               posts.value = snapshot.docs.map((doc) {
                 return {
-                  'image': doc['imageUrl'],
+                  'mediaUrl': doc['mediaUrl'],
                   'uid': doc.id,
                   'username': doc['username'],
                   'userProfileImageUrl': doc['userProfileImageUrl'],

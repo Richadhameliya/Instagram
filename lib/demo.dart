@@ -1,132 +1,63 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:video_player/video_player.dart';
+import 'package:image_picker/image_picker.dart';
 
-class HomeController extends GetxController {
-  var userStoryUrls = <String>[].obs;
+class MediaPreviewScreen extends StatefulWidget {
+  final XFile mediaFile;
 
-  Future<void> fetchFollowingUserStories() async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      // Fetch the user document to get the following list
-      DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
-          .collection('InstaUser')
-          .doc(user.uid)
-          .get();
+  const MediaPreviewScreen({Key? key, required this.mediaFile})
+      : super(key: key);
 
-      if (userSnapshot.exists) {
-        final userData = userSnapshot.data() as Map<String, dynamic>;
-        if (userData.containsKey('following') &&
-            userData['following'] is List) {
-          List<String> followingList = List<String>.from(userData['following']);
-          List<String> fetchedStoryUrls = [];
+  @override
+  _MediaPreviewScreenState createState() => _MediaPreviewScreenState();
+}
 
-          for (String followingId in followingList) {
-            DocumentSnapshot followingUserSnapshot = await FirebaseFirestore
-                .instance
-                .collection('InstaUser')
-                .doc(followingId)
-                .get();
+class _MediaPreviewScreenState extends State<MediaPreviewScreen> {
+  VideoPlayerController? _controller;
 
-            if (followingUserSnapshot.exists) {
-              final followingUserData =
-                  followingUserSnapshot.data() as Map<String, dynamic>;
-              if (followingUserData.containsKey('stories') &&
-                  followingUserData['stories'] != null) {
-                final List<dynamic> stories =
-                    List<dynamic>.from(followingUserData['stories']);
-                for (var story in stories) {
-                  fetchedStoryUrls.add(story['url'].toString());
-                }
-              }
-            }
-          }
-          userStoryUrls.value = fetchedStoryUrls;
-        } else {
-          userStoryUrls.value = [];
-        }
-      }
+  @override
+  void initState() {
+    super.initState();
+    if (widget.mediaFile.mimeType!.startsWith('video/')) {
+      _controller = VideoPlayerController.file(File(widget.mediaFile.path))
+        ..initialize().then((_) {
+          setState(() {});
+        });
     }
   }
 
   @override
-  void onInit() {
-    super.onInit();
-    fetchFollowingUserStories(); // Fetch stories when initialized
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
   }
-}
-
-class StoriesScreen extends StatelessWidget {
-  final HomeController controller = Get.put(HomeController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Stories'),
+        title: Text('Media Preview'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.upload),
+            onPressed: () async {
+              // Here you can call your upload function
+              Navigator.pop(context);
+            },
+          ),
+        ],
       ),
-      body: Obx(() {
-        if (controller.userStoryUrls.isEmpty) {
-          return Center(child: Text('No stories available.'));
-        }
-
-        return SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: List.generate(controller.userStoryUrls.length, (index) {
-              return GestureDetector(
-                onTap: () {
-                  _showStoryDialog(context, controller.userStoryUrls[index]);
-                },
-                child: Container(
-                  height: MediaQuery.of(context).size.height * 0.1,
-                  width: MediaQuery.of(context).size.height * 0.1,
-                  margin: EdgeInsets.only(
-                      left: MediaQuery.of(context).size.width * 0.04),
-                  decoration: BoxDecoration(
-                    color: Colors.grey,
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                      image: NetworkImage(controller.userStoryUrls[index]),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-              );
-            }),
-          ),
-        );
-      }),
+      body: Center(
+        child: widget.mediaFile.mimeType!.startsWith('image/')
+            ? Image.file(File(widget.mediaFile.path), fit: BoxFit.cover)
+            : _controller != null && _controller!.value.isInitialized
+                ? AspectRatio(
+                    aspectRatio: _controller!.value.aspectRatio,
+                    child: VideoPlayer(_controller!),
+                  )
+                : CircularProgressIndicator(),
+      ),
     );
   }
-
-  void _showStoryDialog(BuildContext context, String storyUrl) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          content: Container(
-            width: double.maxFinite,
-            height: MediaQuery.of(context).size.height * 0.7,
-            child: Image.network(storyUrl, fit: BoxFit.cover),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close dialog
-              },
-              child: Text('Close'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-}
-
-void main() {
-  runApp(GetMaterialApp(
-    home: StoriesScreen(),
-  ));
 }

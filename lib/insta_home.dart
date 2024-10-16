@@ -585,7 +585,7 @@ class HomePage extends StatelessWidget {
                             width: double.infinity,
                             decoration: BoxDecoration(
                               image: DecorationImage(
-                                image: NetworkImage(post['image']),
+                                image: NetworkImage(post['mediaUrl']),
                                 fit: BoxFit.cover,
                               ),
                             ),

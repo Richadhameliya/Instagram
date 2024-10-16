@@ -37,7 +37,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
       setState(() {
         posts = snapshot.docs.map((doc) {
-          return {'image': doc['imageUrl'], 'uid': doc['uid']};
+          return {'mediaUrl': doc['mediaUrl'], 'uid': doc['uid']};
         }).toList();
       });
     }
@@ -73,7 +73,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       children: [
                         Padding(
                           padding: EdgeInsets.symmetric(
-                              horizontal: screenWidth * 0.03),
+                              horizontal: screenWidth * 0.04),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -86,6 +86,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   Icon(Icons.keyboard_arrow_down_sharp,
                                       size: 17),
                                   Spacer(),
+                                  Icon(Icons.add_box_outlined),
+                                  SizedBox(
+                                    width: 14,
+                                  ),
                                   GestureDetector(
                                     onTap: () {
                                       Navigator.push(
@@ -95,14 +99,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         ),
                                       );
                                     },
-                                    child: Icon(Icons.menu, size: 18),
+                                    child: Icon(Icons.menu, size: 25),
                                   ),
                                 ],
                               ),
                               SizedBox(height: screenHeight * 0.04),
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
                                 children: [
                                   Stack(
                                     clipBehavior: Clip.none,
@@ -193,10 +195,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       ),
                                     ],
                                   ),
+                                  Spacer(),
                                   Column(children: [
                                     Text('${userController.posts.length}'),
                                     Text('posts')
                                   ]),
+                                  Spacer(),
                                   Column(
                                     children: [
                                       //Text('0'),
@@ -211,6 +215,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       Text('followers'),
                                     ],
                                   ),
+                                  Spacer(),
                                   Column(
                                     children: [
                                       Obx(
@@ -227,11 +232,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       Text('following'),
                                     ],
                                   ),
+                                  Spacer(),
                                 ],
                               ),
                               SizedBox(height: screenHeight * 0.02),
                               Text('$username', style: TextStyle(fontSize: 16)),
-                              SizedBox(height: screenHeight * 0.02),
+                              SizedBox(height: screenHeight * 0.01),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -351,18 +357,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         mainAxisSpacing: 4.0,
                                       ),
                                       itemCount: userController.posts.length,
+                                      shrinkWrap:
+                                          true, // Important for proper sizing
+                                      physics: NeverScrollableScrollPhysics(),
                                       itemBuilder: (context, index) {
                                         final post =
                                             userController.posts[index];
-                                        return Container(
-                                          decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                              image: NetworkImage(
-                                                  post['imageUrl']),
-                                              fit: BoxFit.cover,
+                                        return ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          child: CachedNetworkImage(
+                                            imageUrl: post['mediaUrl'],
+                                            placeholder: (context, url) =>
+                                                Container(
+                                              color: Colors.grey[200],
                                             ),
-                                            borderRadius:
-                                                BorderRadius.circular(8),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    Container(
+                                              color: Colors.grey[200],
+                                              child: Icon(Icons.error,
+                                                  color: Colors.red),
+                                            ),
+                                            fit: BoxFit.cover,
                                           ),
                                         );
                                       },
@@ -385,7 +402,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             child: Stack(
                                               children: [
                                                 VideoPlayerWidget(
-                                                    videoUrl: reel['videoUrl']),
+                                                    videoUrl: reel['mediaUrl']),
                                                 Positioned(
                                                   bottom: 13,
                                                   child: Icon(

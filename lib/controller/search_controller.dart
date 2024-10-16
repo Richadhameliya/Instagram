@@ -1,3 +1,4 @@
+//
 // import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 // import 'package:get/get.dart';
@@ -8,7 +9,7 @@
 //   var allImages = <String>[].obs;
 //   var showImages = true.obs;
 //   var followingUsers = <String>[].obs;
-//   var followerChanges = <String>[].obs;
+//   var followers = <String>[].obs;
 //
 //   @override
 //   void onInit() {
@@ -25,7 +26,7 @@
 //
 //   void resetData() {
 //     followingUsers.clear();
-//     followerChanges.clear(); // Reset follower changes when user logs out
+//     followers.clear();
 //   }
 //
 //   void listenForFollowingUsers() {
@@ -39,6 +40,7 @@
 //         if (snapshot.exists && snapshot.data() != null) {
 //           final data = snapshot.data() as Map<String, dynamic>;
 //           followingUsers.value = List<String>.from(data['following'] ?? []);
+//           followers.value = List<String>.from(data['followers'] ?? []);
 //         }
 //       });
 //     }
@@ -64,13 +66,11 @@
 //             .doc(userId)
 //             .get();
 //
-//         // Check if the documents exist
 //         if (!currentUserDoc.exists || !targetUserDoc.exists) {
 //           print("User document does not exist");
 //           return;
 //         }
 //
-//         // Safely retrieve following and followers lists
 //         List<dynamic> followingList =
 //             (currentUserDoc.data() as Map<String, dynamic>?)?['following'] ??
 //                 [];
@@ -78,27 +78,20 @@
 //             (targetUserDoc.data() as Map<String, dynamic>?)?['followers'] ?? [];
 //
 //         if (followingList.contains(userId)) {
-//           // Unfollow
 //           followingList.remove(userId);
 //           followersList.remove(currentUserId);
-//           followerChanges.add(
-//               'Unfollowed: $userId'); // Remove from target user's followers
 //         } else {
-//           // Follow
 //           followingList.add(userId);
 //           if (!followersList.contains(currentUserId)) {
-//             followersList.add(currentUserId); // Add to target user's followers
-//             followerChanges.add('Followed: $userId'); // Log follow
+//             followersList.add(currentUserId);
 //           }
 //         }
 //
-//         // Update the following list of the current user
 //         await FirebaseFirestore.instance
 //             .collection('InstaUser')
 //             .doc(currentUserId)
 //             .update({'following': followingList});
 //
-//         // Update the followers list of the target user
 //         await FirebaseFirestore.instance
 //             .collection('InstaUser')
 //             .doc(userId)
@@ -130,11 +123,11 @@
 //
 //       List<Map<String, dynamic>> results = snapshot.docs.map((doc) {
 //         return {
-//           'uid': doc.id, // Store user ID for follow/unfollow
+//           'uid': doc.id,
 //           'username': doc['username'],
 //           'email': doc['email'],
 //           'profileImageUrl': doc['imageUrl'],
-//           'isFollowing': isFollowing(doc.id), // Add isFollowing status
+//           'isFollowing': isFollowing(doc.id),
 //         };
 //       }).toList();
 //
@@ -167,6 +160,7 @@
 //     showImages(false);
 //   }
 // }
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
@@ -174,15 +168,15 @@ import 'package:get/get.dart';
 class SearchScreenController extends GetxController {
   var searchResults = <Map<String, dynamic>>[].obs;
   var isLoading = false.obs;
-  var allImages = <String>[].obs;
-  var showImages = true.obs;
+  var allPostsAndReels = <Map<String, dynamic>>[].obs;
+  var showSearchResults = false.obs;
   var followingUsers = <String>[].obs;
   var followers = <String>[].obs;
 
   @override
   void onInit() {
     super.onInit();
-    fetchAllImages();
+    fetchAllPostsAndReels();
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
       if (user != null) {
         listenForFollowingUsers();
@@ -275,12 +269,12 @@ class SearchScreenController extends GetxController {
   void searchUsers(String query) async {
     if (query.isEmpty) {
       searchResults.clear();
-      showImages(true);
+      showSearchResults(false);
       return;
     }
 
     isLoading(true);
-    showImages(false);
+    showSearchResults(true);
 
     try {
       QuerySnapshot snapshot = await FirebaseFirestore.instance
@@ -307,24 +301,38 @@ class SearchScreenController extends GetxController {
     }
   }
 
-  void fetchAllImages() {
+  // Fetch both posts and reels from Firestore
+  void fetchAllPostsAndReels() {
     isLoading(true);
 
+    // Fetch both posts and reels and combine them in one list
     FirebaseFirestore.instance.collectionGroup('posts').snapshots().listen(
-        (snapshot) {
-      List<String> images = snapshot.docs.map((doc) {
-        return (doc['imageUrl'] ?? '') as String;
-      }).toList();
+      (snapshot) {
+        List<Map<String, dynamic>> allPosts = snapshot.docs.map((doc) {
+          return {
+            'type': 'image', // Define as post type
+            'mediaUrl': doc['mediaUrl'] ?? '',
+          };
+        }).toList();
 
-      allImages.assignAll(images);
-    }, onError: (e) {
-      print('Error fetching images: $e');
-    });
+        FirebaseFirestore.instance.collectionGroup('reels').snapshots().listen(
+          (snapshot) {
+            List<Map<String, dynamic>> allReels = snapshot.docs.map((doc) {
+              return {
+                'type': 'video', // Define as reel type
+                'mediaUrl': doc['mediaUrl'] ?? '',
+              };
+            }).toList();
+
+            allPostsAndReels.assignAll([...allPosts, ...allReels]);
+          },
+        );
+      },
+      onError: (e) {
+        print('Error fetching posts and reels: $e');
+      },
+    );
 
     isLoading(false);
-  }
-
-  void hideImages() {
-    showImages(false);
   }
 }
