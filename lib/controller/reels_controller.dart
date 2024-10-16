@@ -18,7 +18,7 @@ class RellsController extends GetxController {
 
       QuerySnapshot snapshot = await _firestore.collection('reels').get();
       videoUrls =
-          snapshot.docs.map((doc) => doc['videoUrl'] as String).toList();
+          snapshot.docs.map((doc) => doc['mediaUrl'] as String).toList();
     } catch (e) {
       errorMessage = e.toString();
     } finally {

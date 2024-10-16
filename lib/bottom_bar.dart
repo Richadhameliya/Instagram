@@ -360,6 +360,7 @@
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -386,6 +387,8 @@ final AddPostController addPostController = Get.put(AddPostController());
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
 class _BottomNavBarState extends State<BottomNavBar> {
+  ValueNotifier<PlatformFile?> image = ValueNotifier<PlatformFile?>(null);
+  ValueNotifier<PlatformFile?> video = ValueNotifier<PlatformFile?>(null);
   List<Widget> screenname = [
     HomePage(),
     InstaSearchScreen(),
@@ -478,6 +481,34 @@ class _BottomNavBarState extends State<BottomNavBar> {
     if (selectedVideo != null) {
       // Navigate to preview screen
       Get.to(() => MediaPreviewScreen(mediaFile: selectedVideo));
+    }
+  }
+
+  Future<void> pickMedia() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.media, // This allows picking both images and videos
+      allowMultiple:
+          false, // Set to true if you want to allow picking multiple files
+    );
+
+    if (result != null) {
+      final pickedFile = result.files.first;
+
+      // Check if the selected file is an image or a video
+      if (pickedFile.extension == 'jpg' ||
+          pickedFile.extension == 'png' ||
+          pickedFile.extension == 'jpeg') {
+        // Handle image
+        image.value = pickedFile;
+      } else if (pickedFile.extension == 'mp4' ||
+          pickedFile.extension == 'mov' ||
+          pickedFile.extension == 'avi') {
+        // Handle video
+        video.value = pickedFile;
+      }
+    } else {
+      // User canceled the picker
+      print("No media selected");
     }
   }
 }
