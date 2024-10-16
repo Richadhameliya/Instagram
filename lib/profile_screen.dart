@@ -197,8 +197,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ),
                                   Spacer(),
                                   Column(children: [
-                                    Text('${userController.posts.length}'),
-                                    Text('posts')
+                                    Text(
+                                      '${userController.posts.length}',
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                    Text(
+                                      'posts',
+                                      style: TextStyle(fontSize: 16),
+                                    )
                                   ]),
                                   Spacer(),
                                   Column(
@@ -210,9 +216,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 .followers.length;
                                         return Text(
                                           '$followersCount',
+                                          style: TextStyle(fontSize: 16),
                                         );
                                       }),
-                                      Text('followers'),
+                                      Text(
+                                        'followers',
+                                        style: TextStyle(fontSize: 16),
+                                      ),
                                     ],
                                   ),
                                   Spacer(),
@@ -225,11 +235,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                   .followingUsers.length;
                                           return Text(
                                             '$followingCount',
+                                            style: TextStyle(fontSize: 16),
                                           );
                                         },
                                       ),
                                       // Text("0"),
-                                      Text('following'),
+                                      Text(
+                                        'following',
+                                        style: TextStyle(fontSize: 16),
+                                      ),
                                     ],
                                   ),
                                   Spacer(),
