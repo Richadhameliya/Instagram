@@ -335,6 +335,7 @@ import 'package:get/get.dart';
 import 'package:story_view/controller/story_controller.dart';
 import 'package:story_view/widgets/story_view.dart';
 
+import 'comment.dart';
 import 'controller/home_controller.dart';
 
 class HomePage extends StatelessWidget {
@@ -399,7 +400,7 @@ class HomePage extends StatelessWidget {
                                     }
                                   },
                                   child: Padding(
-                                    padding: const EdgeInsets.only(left: 15),
+                                    padding: const EdgeInsets.only(left: 10),
                                     child: CircleAvatar(
                                       radius: height * 0.05,
                                       backgroundColor: Colors.grey,
@@ -537,7 +538,7 @@ class HomePage extends StatelessWidget {
                         children: [
                           Padding(
                             padding: EdgeInsets.symmetric(
-                                horizontal: height * 0.015),
+                                horizontal: height * 0.010),
                             child: Row(
                               children: [
                                 Container(
@@ -609,7 +610,32 @@ class HomePage extends StatelessWidget {
                                       )),
                                 ),
                                 SizedBox(width: width * 0.03),
-                                const Icon(Icons.mode_comment_outlined),
+                                GestureDetector(
+                                  onTap: () {
+                                    // Navigator.push(
+                                    //   context,
+                                    //   MaterialPageRoute(
+                                    //     builder: (context) => CommentScreen(
+                                    //         postId: post[
+                                    //             'uid']), // Assuming post has an 'id'
+                                    //   ),
+                                    // );
+                                    showModalBottomSheet(
+                                      context: context,
+                                      isScrollControlled: true,
+                                      backgroundColor: Colors.white,
+                                      shape: const RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.vertical(
+                                            top: Radius.circular(20)),
+                                      ),
+                                      builder: (context) => CommentScreen(
+                                        postId: post['uid'],
+                                      ),
+                                    );
+                                  },
+                                  child:
+                                      const Icon(Icons.mode_comment_outlined),
+                                ),
                                 SizedBox(width: width * 0.03),
                                 const Icon(Icons.send_outlined),
                                 const Spacer(),
@@ -630,6 +656,10 @@ class HomePage extends StatelessWidget {
                                 ),
                               ],
                             ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                            child: Text("hello"),
                           ),
                         ],
                       ),

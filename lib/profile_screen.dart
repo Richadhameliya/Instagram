@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:instagram_app/log_out_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:video_player/video_player.dart';
 import 'Edit_profile.dart';
 import 'controller/profile_controller.dart';
 import 'controller/reels_controller.dart';
@@ -402,23 +403,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     GridView.builder(
                                       gridDelegate:
                                           SliverGridDelegateWithFixedCrossAxisCount(
-                                              crossAxisCount: 3,
-                                              mainAxisSpacing: 4.0,
-                                              crossAxisSpacing: 4.0,
-                                              childAspectRatio: 0.51),
+                                        crossAxisCount: 3,
+                                        mainAxisSpacing: 4.0,
+                                        crossAxisSpacing: 4.0,
+                                        childAspectRatio: 0.46,
+                                      ),
                                       itemCount: userController.reels.length,
                                       itemBuilder: (context, index) {
                                         final reel =
                                             userController.reels[index];
                                         return ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
                                           child: Container(
-                                            color: Colors.transparent,
+                                            color: Colors.black,
                                             child: Stack(
                                               children: [
-                                                VideoPlayerWidget(
-                                                    videoUrl: reel['mediaUrl']),
+                                                Positioned.fill(
+                                                  child: VideoPlayerWidget(
+                                                      videoUrl:
+                                                          reel['mediaUrl']),
+                                                ),
                                                 Positioned(
-                                                  bottom: 13,
+                                                  bottom: 10,
+                                                  // right: 10,
                                                   child: Icon(
                                                     Icons.play_arrow_outlined,
                                                     color: Colors.white,

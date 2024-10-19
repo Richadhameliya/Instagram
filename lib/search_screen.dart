@@ -164,125 +164,137 @@ class InstaSearchScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height;
-
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            children: [
-              TextField(
-                controller: searchFieldController,
-                focusNode: _focusNode,
-                decoration: InputDecoration(
-                  hintText: 'Search',
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.black),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                onChanged: (value) {
-                  searchController.searchUsers(value);
-                },
-                onTap: () {
-                  searchController.showSearchResults(true);
-                },
-              ),
-              Obx(
-                () {
-                  if (searchController.searchResults.isEmpty &&
-                      searchFieldController.text.isNotEmpty) {
-                    return const Center(child: Text('No users found'));
-                  } else if (searchFieldController.text.isNotEmpty) {
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: searchController.searchResults.length,
-                      itemBuilder: (context, index) {
-                        final user = searchController.searchResults[index];
-                        final currentUser = FirebaseAuth.instance.currentUser;
-
-                        return ListTile(
-                          leading: user['profileImageUrl'] != null
-                              ? CircleAvatar(
-                                  backgroundImage:
-                                      NetworkImage(user['profileImageUrl']),
-                                )
-                              : const CircleAvatar(
-                                  child: Icon(Icons.person),
-                                ),
-                          title: Text(user['username']),
-                          subtitle: Text(user['email']),
-                          trailing: currentUser?.uid != user['uid']
-                              ? Obx(() {
-                                  bool isFollowing =
-                                      searchController.isFollowing(user['uid']);
-                                  return MaterialButton(
-                                    height: screenHeight * 0.04,
-                                    shape: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(7),
-                                      borderSide: BorderSide(
-                                          color: isFollowing
-                                              ? Colors.black
-                                              : Colors.blue),
-                                    ),
-                                    color: isFollowing
-                                        ? Colors.white
-                                        : Colors.blue,
-                                    textColor: isFollowing
-                                        ? Colors.black
-                                        : Colors.white,
-                                    onPressed: () {
-                                      searchController
-                                          .toggleFollow(user['uid']);
-                                    },
-                                    child: Text(
-                                        isFollowing ? 'Following' : 'Follow'),
-                                  );
-                                })
-                              : null,
-                        );
-                      },
-                    );
-                  } else {
-                    return Expanded(
-                      child: StaggeredGridView.countBuilder(
-                        crossAxisCount: 3,
-                        itemCount: searchController.allPostsAndReels.length,
-                        itemBuilder: (context, index) {
-                          final postOrReel =
-                              searchController.allPostsAndReels[index];
-
-                          if (postOrReel['type'] == 'image') {
-                            return CachedNetworkImage(
-                              imageUrl: postOrReel['mediaUrl'],
-                              placeholder: (context, url) => Container(
-                                color: Colors.grey[200],
-                              ),
-                              errorWidget: (context, url, error) => Container(
-                                color: Colors.grey[200],
-                                child: Icon(Icons.error, color: Colors.red),
-                              ),
-                              fit: BoxFit.cover,
-                            );
-                          } else if (postOrReel['type'] == 'video') {
-                            return VideoPlayerWidget(
-                                videoUrl: postOrReel['mediaUrl']);
-                          }
-
-                          return const SizedBox.shrink();
-                        },
-                        staggeredTileBuilder: (index) => StaggeredTile.fit(1),
-                        mainAxisSpacing: 8.0,
-                        crossAxisSpacing: 8.0,
+        child: Column(
+          children: [
+            SizedBox(
+              height: 10,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Column(
+                children: [
+                  Container(
+                    height: height * 0.055,
+                    width: width * 0.93,
+                    decoration: BoxDecoration(
+                        color: Colors.grey.shade200,
+                        borderRadius: BorderRadius.circular(10)),
+                    child: TextField(
+                      controller: searchFieldController,
+                      focusNode: _focusNode,
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.search),
+                        hintText: 'Search',
+                        border: InputBorder.none,
                       ),
-                    );
-                  }
-                },
+                      onChanged: (value) {
+                        searchController.searchUsers(value);
+                      },
+                      onTap: () {
+                        searchController.showSearchResults(true);
+                      },
+                    ),
+                  )
+                ],
               ),
-            ],
-          ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Obx(
+              () {
+                if (searchController.searchResults.isEmpty &&
+                    searchFieldController.text.isNotEmpty) {
+                  return const Center(child: Text('No users found'));
+                } else if (searchFieldController.text.isNotEmpty) {
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: searchController.searchResults.length,
+                    itemBuilder: (context, index) {
+                      final user = searchController.searchResults[index];
+                      final currentUser = FirebaseAuth.instance.currentUser;
+
+                      return ListTile(
+                        leading: user['profileImageUrl'] != null
+                            ? CircleAvatar(
+                                backgroundImage:
+                                    NetworkImage(user['profileImageUrl']),
+                              )
+                            : const CircleAvatar(
+                                child: Icon(Icons.person),
+                              ),
+                        title: Text(user['username']),
+                        subtitle: Text(user['email']),
+                        trailing: currentUser?.uid != user['uid']
+                            ? Obx(() {
+                                bool isFollowing =
+                                    searchController.isFollowing(user['uid']);
+                                return MaterialButton(
+                                  height: height * 0.04,
+                                  shape: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(7),
+                                    borderSide: BorderSide(
+                                        color: isFollowing
+                                            ? Colors.black
+                                            : Colors.blue),
+                                  ),
+                                  color:
+                                      isFollowing ? Colors.white : Colors.blue,
+                                  textColor:
+                                      isFollowing ? Colors.black : Colors.white,
+                                  onPressed: () {
+                                    searchController.toggleFollow(user['uid']);
+                                  },
+                                  child: Text(
+                                      isFollowing ? 'Following' : 'Follow'),
+                                );
+                              })
+                            : null,
+                      );
+                    },
+                  );
+                } else {
+                  return Expanded(
+                    child: StaggeredGridView.countBuilder(
+                      crossAxisCount: 3,
+                      itemCount: searchController.allPostsAndReels.length,
+                      itemBuilder: (context, index) {
+                        final postOrReel =
+                            searchController.allPostsAndReels[index];
+
+                        if (postOrReel['type'] == 'image') {
+                          return CachedNetworkImage(
+                            imageUrl: postOrReel['mediaUrl'],
+                            placeholder: (context, url) => Container(
+                              color: Colors.grey[200],
+                            ),
+                            errorWidget: (context, url, error) => Container(
+                              color: Colors.grey[200],
+                              child: Icon(Icons.error, color: Colors.red),
+                            ),
+                            fit: BoxFit.cover,
+                          );
+                        } else if (postOrReel['type'] == 'video') {
+                          return VideoPlayerWidget(
+                              videoUrl: postOrReel['mediaUrl']);
+                        }
+
+                        return const SizedBox.shrink();
+                      },
+                      staggeredTileBuilder: (index) => StaggeredTile.fit(1),
+                      mainAxisSpacing: 3.0,
+                      crossAxisSpacing: 3.0,
+                    ),
+                  );
+                }
+              },
+            ),
+          ],
         ),
       ),
     );
