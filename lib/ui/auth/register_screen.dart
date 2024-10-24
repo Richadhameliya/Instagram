@@ -2,73 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:instagram_app/constant/app_assets.dart';
+import 'package:instagram_app/controller/register_controller.dart';
 
-import '../bottom_bar.dart';
+import '../../constant/app_string.dart';
+import '../main/bottombar/bottom_bar.dart';
 import 'login_screen.dart';
 
 class RegistrationScreen extends StatelessWidget {
+  final RegisterController registerController = Get.put(RegisterController());
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  Future<void> _registerUser(BuildContext context) async {
-    if (_formKey.currentState?.validate() ?? false) {
-      String email = _emailController.text.trim();
-      String username = _usernameController.text.trim();
-      String password = _passwordController.text.trim();
-
-      try {
-        UserCredential userCredential =
-            await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: email,
-          password: password,
-        );
-
-        final User? user = userCredential.user;
-        if (user != null) {
-          await FirebaseFirestore.instance
-              .collection('InstaUser')
-              .doc(user.uid)
-              .set({
-            'email': email,
-            'username': username,
-            'pronouns': '',
-            'bio': '',
-            'imageUrl': '',
-          });
-
-          Fluttertoast.showToast(
-            msg: 'Registration successful',
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            backgroundColor: Colors.black,
-            textColor: Colors.white,
-            fontSize: 16.0,
-          );
-
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => BottomNavBar(),
-            ),
-          );
-        }
-      } catch (e) {
-        Fluttertoast.showToast(
-          msg: 'Error: $e',
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          backgroundColor: Colors.black,
-          textColor: Colors.white,
-          fontSize: 16.0,
-        );
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final screenWidth = mediaQuery.size.width;
+    final screenHeight = mediaQuery.size.height;
+
     final screenSize = MediaQuery.of(context).size;
     final isPortrait =
         MediaQuery.of(context).orientation == Orientation.portrait;
@@ -90,14 +45,12 @@ class RegistrationScreen extends StatelessWidget {
                     height: screenSize.height * 0.1,
                   ),
                   Center(
-                    child: Image.asset(
-                      'assets/images/instagram.png',
-                      scale: isPortrait ? 8 : 12,
-                    ),
+                    child: assetImage(AppAssets.instaLogo,
+                        height: screenHeight * 0.1),
                   ),
                   SizedBox(height: screenSize.height * 0.02),
                   Text(
-                    'Create an account',
+                    AppString.createAnAccount,
                     style: TextStyle(
                       fontSize: screenSize.width * 0.07,
                       fontWeight: FontWeight.bold,
@@ -108,7 +61,7 @@ class RegistrationScreen extends StatelessWidget {
                   TextFormField(
                     controller: _emailController,
                     decoration: InputDecoration(
-                      hintText: "Email",
+                      hintText: AppString.email,
                       border: OutlineInputBorder(
                         borderRadius:
                             BorderRadius.circular(screenSize.width * 0.03),
@@ -116,10 +69,10 @@ class RegistrationScreen extends StatelessWidget {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter an email';
+                        return AppString.pleaseEnterAnEmail;
                       }
                       if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                        return 'Please enter a valid email';
+                        return AppString.pleaseEnterValidEmail;
                       }
                       return null;
                     },
@@ -128,7 +81,7 @@ class RegistrationScreen extends StatelessWidget {
                   TextFormField(
                     controller: _usernameController,
                     decoration: InputDecoration(
-                      hintText: "Username",
+                      hintText: AppString.username,
                       border: OutlineInputBorder(
                         borderRadius:
                             BorderRadius.circular(screenSize.width * 0.03),
@@ -136,7 +89,7 @@ class RegistrationScreen extends StatelessWidget {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter a username';
+                        return AppString.pleaseEnterAUsername;
                       }
                       return null;
                     },
@@ -146,7 +99,7 @@ class RegistrationScreen extends StatelessWidget {
                     controller: _passwordController,
                     obscureText: true,
                     decoration: InputDecoration(
-                      hintText: "Password",
+                      hintText: AppString.password,
                       border: OutlineInputBorder(
                         borderRadius:
                             BorderRadius.circular(screenSize.width * 0.03),
@@ -154,10 +107,10 @@ class RegistrationScreen extends StatelessWidget {
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter a password';
+                        return AppString.pleaseEnterAPassword;
                       }
                       if (value.length < 6) {
-                        return 'Password must be at least 6 characters long';
+                        return AppString.passwordMustBe;
                       }
                       return null;
                     },
@@ -165,7 +118,7 @@ class RegistrationScreen extends StatelessWidget {
                   SizedBox(height: screenSize.height * 0.02),
                   MaterialButton(
                     child: Text(
-                      "Sign Up",
+                      AppString.signup,
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: screenSize.width * 0.05),
@@ -177,13 +130,13 @@ class RegistrationScreen extends StatelessWidget {
                       borderRadius:
                           BorderRadius.circular(screenSize.width * 0.07),
                     ),
-                    onPressed: () => _registerUser(context),
+                    onPressed: () => registerController.registerUser(context),
                   ),
                   SizedBox(height: screenSize.height * 0.01),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text('Already have an account?'),
+                      const Text(AppString.alreadyHaveAnAccount),
                       TextButton(
                         onPressed: () {
                           Navigator.push(
@@ -192,7 +145,7 @@ class RegistrationScreen extends StatelessWidget {
                                 builder: (context) => LogInScreen(),
                               ));
                         },
-                        child: const Text("Log In"),
+                        child: const Text(AppString.login),
                       ),
                     ],
                   ),

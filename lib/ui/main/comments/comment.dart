@@ -1,111 +1,10 @@
-// import 'package:flutter/material.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
-//
-// class CommentScreen extends StatefulWidget {
-//   final String postId;
-//
-//   CommentScreen({required this.postId});
-//
-//   @override
-//   _CommentScreenState createState() => _CommentScreenState();
-// }
-//
-// class _CommentScreenState extends State<CommentScreen> {
-//   final TextEditingController _controller = TextEditingController();
-//   List<QueryDocumentSnapshot> comments = [];
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     _loadComments();
-//   }
-//
-//   void _loadComments() {
-//     FirebaseFirestore.instance
-//         .collection('comments')
-//         .where('postId', isEqualTo: widget.postId)
-//         .orderBy('timestamp', descending: true)
-//         .snapshots()
-//         .listen((snapshot) {
-//       setState(() {
-//         comments = snapshot.docs;
-//       });
-//     });
-//   }
-//
-//   void _addComment() async {
-//     if (_controller.text.isNotEmpty) {
-//       await FirebaseFirestore.instance.collection('comments').add({
-//         'postId': widget.postId,
-//         'comment': _controller.text,
-//         'username': 'YourUsername', // Replace with actual username
-//         'profileImageUrl':
-//             'YourProfileImageUrl', // Replace with actual profile image URL
-//         'timestamp': FieldValue.serverTimestamp(),
-//       });
-//       _controller.clear(); // Clear the text field after submission
-//     }
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Comments'),
-//       ),
-//       body: Padding(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Column(
-//           children: [
-//             Expanded(
-//               child: comments.isEmpty
-//                   ? Center(child: Text('No comments yet.'))
-//                   : ListView.builder(
-//                       itemCount: comments.length,
-//                       itemBuilder: (context, index) {
-//                         return ListTile(
-//                           leading: CircleAvatar(
-//                             backgroundImage: NetworkImage(
-//                               (comments[index].data() as Map<String, dynamic>)
-//                                       .containsKey('profileImageUrl')
-//                                   ? comments[index]['profileImageUrl']
-//                                   : 'https://via.placeholder.com/150',
-//                             ),
-//                           ),
-//                           title: Text(
-//                             (comments[index].data() as Map<String, dynamic>)
-//                                     .containsKey('username')
-//                                 ? comments[index]['username']
-//                                 : 'Unknown User',
-//                           ),
-//                           subtitle: Text(comments[index]['comment']),
-//                         );
-//                       },
-//                     ),
-//             ),
-//             TextField(
-//               controller: _controller,
-//               decoration: InputDecoration(
-//                 hintText: 'Type your comment...',
-//                 suffixIcon: IconButton(
-//                   icon: Icon(Icons.send),
-//                   onPressed: _addComment,
-//                 ),
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:instagram_app/constant/app_string.dart';
 
-import 'bottom_bar.dart';
+import '../bottombar/bottom_bar.dart';
 
 class CommentScreen extends StatefulWidget {
   final String postId;
@@ -158,7 +57,7 @@ class _CommentScreenState extends State<CommentScreen> {
 
           print('User Data: $userData');
 
-          String username = userData?['username'] ?? 'Unknown User';
+          String username = userData?['username'];
           String profileImageUrl =
               userData?['imageUrl'] ?? 'https://via.placeholder.com/150';
 
@@ -207,12 +106,12 @@ class _CommentScreenState extends State<CommentScreen> {
                 height: 10,
               ),
               Text(
-                'Comment',
+                AppString.comment,
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
               ),
               Expanded(
                 child: comments.isEmpty
-                    ? Center(child: Text('No comments yet.'))
+                    ? Center(child: Text(AppString.noCommentYet))
                     : ListView.builder(
                         itemCount: comments.length,
                         itemBuilder: (context, index) {
@@ -229,7 +128,7 @@ class _CommentScreenState extends State<CommentScreen> {
                               (comments[index].data() as Map<String, dynamic>)
                                       .containsKey('username')
                                   ? comments[index]['username']
-                                  : 'Unknown User',
+                                  : AppString.unKnownUser,
                             ),
                             subtitle: Text(comments[index]['comment']),
                           );
@@ -272,7 +171,7 @@ class _CommentScreenState extends State<CommentScreen> {
                       child: TextField(
                         controller: _controller,
                         decoration: InputDecoration(
-                          hintText: 'Type your comment...',
+                          hintText: AppString.typeComment,
                           border: OutlineInputBorder(
                             borderSide: BorderSide.none,
                           ),

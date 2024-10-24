@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:instagram_app/saved_post.dart';
-import 'auth/login_screen.dart';
-import 'controller/log_out_controller.dart';
+import 'package:instagram_app/constant/app_string.dart';
+import 'package:instagram_app/controller/log_out_controller.dart';
+import '../main/save_post/saved_post.dart';
+import 'login_screen.dart';
 
 class LogOutScreen extends StatelessWidget {
-  final AuthController _authController = Get.put(AuthController());
+  final LogOutController _authController = Get.put(LogOutController());
   GetStorage box = GetStorage();
 
   @override
@@ -30,7 +31,7 @@ class LogOutScreen extends StatelessWidget {
                       (route) => false);
                 },
                 child: Text(
-                  'Log out',
+                  AppString.logout,
                   style: TextStyle(fontSize: 20),
                 ),
               ),
@@ -45,7 +46,7 @@ class LogOutScreen extends StatelessWidget {
                       ));
                 },
                 child: Text(
-                  "Saved  ",
+                  AppString.saved,
                   style: TextStyle(fontSize: 20),
                 ),
               ),

@@ -28,76 +28,78 @@ class RellsController extends GetxController {
   }
 }
 
-class VideoPlayerWidget extends StatefulWidget {
-  final String videoUrl;
-
-  const VideoPlayerWidget({Key? key, required this.videoUrl}) : super(key: key);
-
-  @override
-  _VideoPlayerWidgetState createState() => _VideoPlayerWidgetState();
-}
-
-class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
-  late VideoPlayerController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = VideoPlayerController.network(widget.videoUrl)
-      ..initialize().then((_) {
-        setState(() {});
-      });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          width: double.infinity,
-          height: 790,
-          margin: EdgeInsets.only(bottom: 3),
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (_controller.value.isInitialized)
-                AspectRatio(
-                  aspectRatio: _controller.value.aspectRatio,
-                  child: VideoPlayer(_controller),
-                )
-              else
-                Center(child: CircularProgressIndicator()),
-            ],
-          ),
-        ),
-        Positioned(
-          top: 380,
-          right: 190,
-          child: IconButton(
-            icon: Icon(
-              _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-              color: Colors.white,
-              size: 30,
-            ),
-            onPressed: () {
-              setState(() {
-                _controller.value.isPlaying
-                    ? _controller.pause()
-                    : _controller.play();
-              });
-            },
-          ),
-        ),
-      ],
-    );
-  }
-}
+// class VideoPlayerWidget extends StatefulWidget {
+//   final String videoUrl;
+//
+//   const VideoPlayerWidget({Key? key, required this.videoUrl}) : super(key: key);
+//
+//   @override
+//   _VideoPlayerWidgetState createState() => _VideoPlayerWidgetState();
+// }
+//
+// class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
+//   late VideoPlayerController _controller;
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     _controller = VideoPlayerController.network(widget.videoUrl)
+//       ..initialize().then((_) {
+//         setState(() {});
+//       });
+//   }
+//
+//   @override
+//   void dispose() {
+//     _controller.dispose();
+//     super.dispose();
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final screenHeight = MediaQuery.of(context).size.height;
+//     final screenWidth = MediaQuery.of(context).size.width;
+//     return Stack(
+//       children: [
+//         Container(
+//           width: double.infinity,
+//           height: screenHeight * 0.99,
+//           margin: EdgeInsets.only(bottom: 3),
+//           decoration: BoxDecoration(
+//             color: Colors.transparent,
+//           ),
+//           child: Column(
+//             mainAxisAlignment: MainAxisAlignment.center,
+//             children: [
+//               if (_controller.value.isInitialized)
+//                 AspectRatio(
+//                   aspectRatio: _controller.value.aspectRatio,
+//                   child: VideoPlayer(_controller),
+//                 )
+//               else
+//                 Center(child: CircularProgressIndicator()),
+//             ],
+//           ),
+//         ),
+//         Positioned(
+//           top: 380,
+//           right: 190,
+//           child: IconButton(
+//             icon: Icon(
+//               _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+//               color: Colors.white,
+//               size: 30,
+//             ),
+//             onPressed: () {
+//               setState(() {
+//                 _controller.value.isPlaying
+//                     ? _controller.pause()
+//                     : _controller.play();
+//               });
+//             },
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+// }

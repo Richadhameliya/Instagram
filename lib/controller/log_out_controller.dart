@@ -1,10 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:instagram_app/ui/auth/login_screen.dart';
 
-import '../auth/login_screen.dart';
-
-class AuthController extends GetxController {
+class LogOutController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   var user = Rx<User?>(null);
 

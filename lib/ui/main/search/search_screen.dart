@@ -152,9 +152,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:instagram_app/controller/search_controller.dart';
 import 'package:video_player/video_player.dart';
 
-import 'controller/search_controller.dart';
+import '../../../constant/app_string.dart';
 
 class InstaSearchScreen extends StatelessWidget {
   final SearchScreenController searchController =
@@ -171,10 +172,10 @@ class InstaSearchScreen extends StatelessWidget {
         child: Column(
           children: [
             SizedBox(
-              height: 10,
+              height: height * 0.01,
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
+              padding: EdgeInsets.symmetric(horizontal: width * 0.01),
               child: Column(
                 children: [
                   Container(
@@ -188,7 +189,7 @@ class InstaSearchScreen extends StatelessWidget {
                       focusNode: _focusNode,
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.search),
-                        hintText: 'Search',
+                        hintText: AppString.search,
                         border: InputBorder.none,
                       ),
                       onChanged: (value) {
@@ -203,13 +204,13 @@ class InstaSearchScreen extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: 10,
+              height: height * 0.01,
             ),
             Obx(
               () {
                 if (searchController.searchResults.isEmpty &&
                     searchFieldController.text.isNotEmpty) {
-                  return const Center(child: Text('No users found'));
+                  return const Center(child: Text(AppString.noUsersFound));
                 } else if (searchFieldController.text.isNotEmpty) {
                   return ListView.builder(
                     shrinkWrap: true,
@@ -250,8 +251,9 @@ class InstaSearchScreen extends StatelessWidget {
                                   onPressed: () {
                                     searchController.toggleFollow(user['uid']);
                                   },
-                                  child: Text(
-                                      isFollowing ? 'Following' : 'Follow'),
+                                  child: Text(isFollowing
+                                      ? AppString.following
+                                      : AppString.follow),
                                 );
                               })
                             : null,

@@ -2,10 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:instagram_app/auth/register_screen.dart';
+import 'package:instagram_app/constant/app_assets.dart';
+import 'package:instagram_app/constant/app_string.dart';
 
-import '../bottom_bar.dart';
+import '../../controller/login_controller.dart';
+import '../main/bottombar/bottom_bar.dart';
+import 'register_screen.dart';
 
 class LogInScreen extends StatefulWidget {
   @override
@@ -17,6 +22,7 @@ class _LogInScreenState extends State<LogInScreen> {
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   GetStorage box = GetStorage();
+  final LoginController loginController = Get.put(LoginController());
 
   Future<void> _login() async {
     if (_formKey.currentState?.validate() ?? false) {
@@ -41,7 +47,7 @@ class _LogInScreenState extends State<LogInScreen> {
 
         if (userDoc.exists) {
           Fluttertoast.showToast(
-            msg: 'Login successful',
+            msg: AppString.loginSuccessful,
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.BOTTOM,
             backgroundColor: Colors.black,
@@ -57,7 +63,7 @@ class _LogInScreenState extends State<LogInScreen> {
           );
         } else {
           Fluttertoast.showToast(
-            msg: 'User not found in database. Please register.',
+            msg: AppString.userNotFound,
             toastLength: Toast.LENGTH_LONG,
             gravity: ToastGravity.BOTTOM,
             backgroundColor: Colors.black,
@@ -66,7 +72,7 @@ class _LogInScreenState extends State<LogInScreen> {
         }
       } catch (e) {
         Fluttertoast.showToast(
-          msg: 'Error: ${e.toString()}',
+          msg: "${AppString.error}: ${e.toString()}",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           backgroundColor: Colors.black,
@@ -96,7 +102,7 @@ class _LogInScreenState extends State<LogInScreen> {
                   height: screenHeight * 0.08,
                 ),
                 Text(
-                  'English(India)',
+                  '${AppString.english}',
                   style: TextStyle(
                     fontSize: screenWidth * 0.04,
                   ),
@@ -106,10 +112,8 @@ class _LogInScreenState extends State<LogInScreen> {
                   height: screenHeight * 0.05,
                 ),
                 Center(
-                  child: Image.asset(
-                    'assets/images/instagram.png',
-                    height: screenWidth * 0.2,
-                  ),
+                  child: assetImage(AppAssets.instaLogo,
+                      height: screenHeight * 0.1),
                 ),
                 SizedBox(height: screenHeight * 0.05),
                 Form(
@@ -119,14 +123,14 @@ class _LogInScreenState extends State<LogInScreen> {
                       TextFormField(
                         controller: _emailController,
                         decoration: InputDecoration(
-                          hintText: 'Email',
+                          hintText: AppString.email,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter an email';
+                            return AppString.pleaseEnterAnEmail;
                           }
                           if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
                             return 'Please enter a valid email';
@@ -139,14 +143,14 @@ class _LogInScreenState extends State<LogInScreen> {
                         controller: _passwordController,
                         obscureText: true,
                         decoration: InputDecoration(
-                          hintText: 'Password',
+                          hintText: AppString.password,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Please enter a password';
+                            return AppString.pleaseEnterAPassword;
                           }
                           return null;
                         },
@@ -161,7 +165,7 @@ class _LogInScreenState extends State<LogInScreen> {
                           side: BorderSide.none,
                         ),
                         child: Text(
-                          "Log In",
+                          AppString.login,
                           style: TextStyle(
                             color: Colors.white,
                             fontSize:
@@ -177,7 +181,7 @@ class _LogInScreenState extends State<LogInScreen> {
                             // Handle forgotten password
                           },
                           child: Text(
-                            "Forgotten Password?",
+                            AppString.forgottenPassword,
                             style: TextStyle(
                               color: Colors.lightBlue,
                               fontSize:
@@ -186,7 +190,7 @@ class _LogInScreenState extends State<LogInScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(height: screenHeight * 0.17),
+                      SizedBox(height: screenHeight * 0.18),
                       MaterialButton(
                         onPressed: () {
                           Navigator.push(
@@ -202,7 +206,7 @@ class _LogInScreenState extends State<LogInScreen> {
                           side: BorderSide(color: Colors.lightBlue, width: 2),
                         ),
                         child: Text(
-                          "Create new account",
+                          AppString.createNewAccount,
                           style: TextStyle(
                             color: Colors.lightBlue,
                             fontSize: screenWidth * 0.05,
@@ -210,10 +214,8 @@ class _LogInScreenState extends State<LogInScreen> {
                         ),
                       ),
                       Center(
-                        child: Image.asset(
-                          'assets/images/meta.png',
-                          height: screenWidth * 0.14,
-                        ),
+                        child: assetImage(AppAssets.meta,
+                            height: screenHeight * 0.07),
                       ),
                     ],
                   ),

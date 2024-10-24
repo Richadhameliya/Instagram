@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import 'controller/editprofile_controller.dart';
+import 'package:instagram_app/controller/editprofile_controller.dart';
 
 class EditProfileScreen extends StatelessWidget {
   final EditProfileController _controller = Get.put(EditProfileController());
 
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -23,7 +24,7 @@ class EditProfileScreen extends StatelessWidget {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
+                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -32,8 +33,8 @@ class EditProfileScreen extends StatelessWidget {
                         onTap: _controller.pickImage,
                         child: Obx(() {
                           return Container(
-                            height: 100,
-                            width: 100,
+                            height: screenHeight * 0.1,
+                            width: screenWidth * 0.4,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: Colors.grey,
@@ -53,7 +54,7 @@ class EditProfileScreen extends StatelessWidget {
                         }),
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: screenHeight * 0.01),
                     const Center(
                       child: Text(
                         "Edit Picture or Avatar",
@@ -64,7 +65,7 @@ class EditProfileScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 30),
+                    SizedBox(height: screenHeight * 0.03),
                     TextField(
                       controller: _controller.usernameController,
                       decoration: InputDecoration(
@@ -75,7 +76,7 @@ class EditProfileScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    SizedBox(height: screenHeight * 0.01),
                     TextField(
                       controller: _controller.emailController,
                       decoration: InputDecoration(
@@ -86,7 +87,7 @@ class EditProfileScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    SizedBox(height: screenHeight * 0.01),
                     TextField(
                       controller: _controller.pronounsController,
                       decoration: InputDecoration(
@@ -97,7 +98,7 @@ class EditProfileScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    SizedBox(height: screenHeight * 0.01),
                     TextField(
                       controller: _controller.bioController,
                       decoration: InputDecoration(
@@ -108,9 +109,9 @@ class EditProfileScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: screenHeight * 0.02),
                     const Text("Add link", style: TextStyle(fontSize: 16)),
-                    const SizedBox(height: 18),
+                    SizedBox(height: screenHeight * 0.03),
                     const Text("Add banners", style: TextStyle(fontSize: 16)),
                     TextField(
                       decoration: InputDecoration(
@@ -123,7 +124,7 @@ class EditProfileScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: screenHeight * 0.02),
                     Obx(() {
                       return Row(
                         children: [
@@ -137,26 +138,29 @@ class EditProfileScreen extends StatelessWidget {
                         ],
                       );
                     }),
-                    const SizedBox(height: 10),
+                    SizedBox(height: screenHeight * 0.01),
                   ],
                 ),
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Divider(height: 40, color: Colors.grey.shade200),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 10),
+                  Divider(
+                      height: screenHeight * 0.05, color: Colors.grey.shade200),
+                  Padding(
+                    padding: EdgeInsets.only(left: screenWidth * 0.03),
                     child: Text("Switch to professional account",
                         style: TextStyle(fontSize: 18, color: Colors.blue)),
                   ),
-                  Divider(height: 40, color: Colors.grey.shade200),
-                  const Padding(
-                    padding: EdgeInsets.only(left: 10),
+                  Divider(
+                      height: screenHeight * 0.05, color: Colors.grey.shade200),
+                  Padding(
+                    padding: EdgeInsets.only(left: screenWidth * 0.03),
                     child: Text("Personal information setting",
                         style: TextStyle(fontSize: 18, color: Colors.blue)),
                   ),
-                  Divider(height: 40, color: Colors.grey.shade200),
+                  Divider(
+                      height: screenHeight * 0.05, color: Colors.grey.shade200),
                 ],
               ),
             ],

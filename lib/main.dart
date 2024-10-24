@@ -2,14 +2,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:instagram_app/profile_screen.dart';
-import 'package:instagram_app/storyy.dart';
-import 'auth/login_screen.dart';
-import 'auth/register_screen.dart';
-import 'bottom_bar.dart';
-import 'controller/home_controller.dart';
-import 'demo.dart';
-import 'insta_home.dart';
+import 'package:instagram_app/ui/main/bottombar/bottom_bar.dart';
+import 'package:instagram_app/ui/main/profile/profile_screen.dart';
+import 'ui/auth/login_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
