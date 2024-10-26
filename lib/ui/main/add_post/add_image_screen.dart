@@ -6,12 +6,11 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../../controller/bottombar_controller.dart';
+import '../../../controller/post_add_controller.dart';
 import 'add_video_screen.dart';
 
 class MediaPreviewScreen extends StatelessWidget {
-  final BottombarController bottombarController =
-      Get.put(BottombarController());
+  final PostAddController postAddController = Get.put(PostAddController());
 
   final XFile mediaFile;
 
@@ -59,7 +58,7 @@ class MediaPreviewScreen extends StatelessWidget {
               style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
             ),
             onPressed: () {
-              bottombarController.uploadMedia(mediaFile);
+              postAddController.uploadMedia(mediaFile, context);
             },
           ),
         ],

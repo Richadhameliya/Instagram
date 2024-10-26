@@ -1,18 +1,17 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:instagram_app/constant/app_string.dart';
+import 'package:instagram_app/helper/helper.dart';
 import 'package:instagram_app/ui/main/add_post/add_image_screen.dart';
-
 import '../ui/main/bottombar/bottom_bar.dart';
 
-class BottombarController extends GetxController {
+class PostAddController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   ValueNotifier<PlatformFile?> image = ValueNotifier<PlatformFile?>(null);
@@ -47,18 +46,12 @@ class BottombarController extends GetxController {
     }
   }
 
-  Future<void> uploadMedia(XFile mediaFile) async {
+  Future<void> uploadMedia(XFile mediaFile, BuildContext context) async {
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) {
-        Fluttertoast.showToast(
-          msg: "User not authenticated",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0,
-        );
+        Helper.dialogCall.showToast(context, AppString.userNotAuthenticated,
+            Colors.black, Colors.white);
         return;
       }
 
@@ -68,14 +61,8 @@ class BottombarController extends GetxController {
         String fileExtension = mediaFile.path.split('.').last.toLowerCase();
         mimeType = _getMimeType(fileExtension);
         if (mimeType == null) {
-          Fluttertoast.showToast(
-            msg: "Unsupported file type",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            fontSize: 16.0,
-          );
+          Helper.dialogCall.showToast(context, AppString.unSupportedFileType,
+              Colors.black, Colors.white);
           return;
         }
       }
@@ -108,14 +95,8 @@ class BottombarController extends GetxController {
           'username': username,
           'userProfileImageUrl': userProfileImageUrl,
         });
-        Fluttertoast.showToast(
-          msg: "Image uploaded successfully!",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          backgroundColor: Colors.black,
-          textColor: Colors.white,
-          fontSize: 16.0,
-        );
+        Helper.dialogCall.showToast(context,
+            AppString.imageUploadedSuccessfully, Colors.black, Colors.white);
       } else if (mimeType.startsWith('video/')) {
         await FirebaseFirestore.instance.collection('reels').add({
           'mediaUrl': downloadUrl,
@@ -124,26 +105,14 @@ class BottombarController extends GetxController {
           'username': username,
           'userProfileImageUrl': userProfileImageUrl,
         });
-        Fluttertoast.showToast(
-          msg: "Video uploaded successfully!",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          backgroundColor: Colors.black,
-          textColor: Colors.white,
-          fontSize: 16.0,
-        );
+        Helper.dialogCall.showToast(context,
+            AppString.videoUploadedSuccessfully, Colors.black, Colors.white);
       }
 
       Get.offAll(() => BottomNavBar());
     } catch (e) {
-      Fluttertoast.showToast(
-        msg: "Error uploading media: $e",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
+      Helper.dialogCall.showToast(context,
+          "${AppString.errorUploadingMedia} $e", Colors.black, Colors.white);
     }
   }
 

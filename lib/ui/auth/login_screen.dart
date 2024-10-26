@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:instagram_app/constant/app_assets.dart';
 import 'package:instagram_app/constant/app_string.dart';
-
+import 'package:instagram_app/helper/helper.dart';
+import 'package:instagram_app/widget/app_button.dart';
+import 'package:instagram_app/widget/app_txtfeild.dart';
 import '../../controller/login_controller.dart';
 import '../main/bottombar/bottom_bar.dart';
 import 'register_screen.dart';
@@ -46,13 +47,8 @@ class _LogInScreenState extends State<LogInScreen> {
             .get();
 
         if (userDoc.exists) {
-          Fluttertoast.showToast(
-            msg: AppString.loginSuccessful,
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            backgroundColor: Colors.black,
-            textColor: Colors.white,
-          );
+          Helper.dialogCall.showToast(
+              context, AppString.loginSuccessful, Colors.black, Colors.white);
 
           Navigator.pushAndRemoveUntil(
             context,
@@ -62,22 +58,12 @@ class _LogInScreenState extends State<LogInScreen> {
             (route) => false,
           );
         } else {
-          Fluttertoast.showToast(
-            msg: AppString.userNotFound,
-            toastLength: Toast.LENGTH_LONG,
-            gravity: ToastGravity.BOTTOM,
-            backgroundColor: Colors.black,
-            textColor: Colors.white,
-          );
+          Helper.dialogCall.showToast(
+              context, AppString.userNotFound, Colors.black, Colors.white);
         }
       } catch (e) {
-        Fluttertoast.showToast(
-          msg: "${AppString.error}: ${e.toString()}",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          backgroundColor: Colors.black,
-          textColor: Colors.white,
-        );
+        Helper.dialogCall.showToast(context,
+            "${AppString.error}: ${e.toString()}", Colors.black, Colors.white);
       }
     }
   }
@@ -120,14 +106,9 @@ class _LogInScreenState extends State<LogInScreen> {
                   key: _formKey,
                   child: Column(
                     children: [
-                      TextFormField(
+                      LoginTextField(
                         controller: _emailController,
-                        decoration: InputDecoration(
-                          hintText: AppString.email,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
+                        hintText: AppString.email,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return AppString.pleaseEnterAnEmail;
@@ -139,15 +120,10 @@ class _LogInScreenState extends State<LogInScreen> {
                         },
                       ),
                       SizedBox(height: screenHeight * 0.02),
-                      TextFormField(
+                      LoginTextField(
                         controller: _passwordController,
                         obscureText: true,
-                        decoration: InputDecoration(
-                          hintText: AppString.password,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
+                        hintText: AppString.password,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return AppString.pleaseEnterAPassword;
@@ -156,24 +132,7 @@ class _LogInScreenState extends State<LogInScreen> {
                         },
                       ),
                       SizedBox(height: screenHeight * 0.03),
-                      MaterialButton(
-                        height: screenHeight * 0.06,
-                        minWidth: double.infinity, // Full width button
-                        color: Colors.lightBlue,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                          side: BorderSide.none,
-                        ),
-                        child: Text(
-                          AppString.login,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize:
-                                screenWidth * 0.05, // Responsive font size
-                          ),
-                        ),
-                        onPressed: _login,
-                      ),
+                      LoginButton(appTile: AppString.login, onTap: _login),
                       SizedBox(height: screenHeight * 0.02),
                       Center(
                         child: TextButton(

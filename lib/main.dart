@@ -17,14 +17,13 @@ class MyApp extends StatelessWidget {
   MyApp({super.key});
 
   GetStorage box = GetStorage();
-  // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
     var UId = box.read('uid');
     return GetMaterialApp(
       getPages: [
         GetPage(name: '/profile', page: () => ProfileScreen()),
-        // Other routes...
       ],
       title: 'Instagram App',
       theme: ThemeData(

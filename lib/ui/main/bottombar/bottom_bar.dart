@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:instagram_app/controller/bottombar_controller.dart';
+import 'package:instagram_app/controller/post_add_controller.dart';
 import 'package:instagram_app/controller/home_controller.dart';
 import '../home/insta_home.dart';
 import '../profile/profile_screen.dart';
@@ -16,7 +16,7 @@ class BottomNavBar extends StatefulWidget {
 }
 
 final HomeController controller = Get.put(HomeController());
-final BottombarController bottombarController = Get.put(BottombarController());
+final PostAddController postAddController = Get.put(PostAddController());
 
 class _BottomNavBarState extends State<BottomNavBar> {
   List<Widget> screenname = [
@@ -80,7 +80,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         onTap: (value) {
           if (value == 2) {
             // Open gallery to select an image or video
-            bottombarController.pickMedia();
+            postAddController.pickMedia();
           } else {
             // Update selected screen for other tabs
             setState(() {

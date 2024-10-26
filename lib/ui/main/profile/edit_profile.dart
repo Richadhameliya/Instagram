@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:instagram_app/constant/app_string.dart';
 import 'package:instagram_app/controller/editprofile_controller.dart';
+import 'package:instagram_app/widget/app_txtfeild.dart';
 
 class EditProfileScreen extends StatelessWidget {
   final EditProfileController _controller = Get.put(EditProfileController());
@@ -66,63 +68,32 @@ class EditProfileScreen extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: screenHeight * 0.03),
-                    TextField(
+                    EditTextField(
                       controller: _controller.usernameController,
-                      decoration: InputDecoration(
-                        labelText: "Username",
-                        labelStyle: TextStyle(
-                          color: Colors.grey.shade400,
-                          fontSize: 15,
-                        ),
-                      ),
+                      labelText: AppString.username,
                     ),
                     SizedBox(height: screenHeight * 0.01),
-                    TextField(
+                    EditTextField(
+                      labelText: AppString.email,
                       controller: _controller.emailController,
-                      decoration: InputDecoration(
-                        labelText: "Email",
-                        labelStyle: TextStyle(
-                          color: Colors.grey.shade400,
-                          fontSize: 15,
-                        ),
-                      ),
                     ),
                     SizedBox(height: screenHeight * 0.01),
-                    TextField(
+                    EditTextField(
                       controller: _controller.pronounsController,
-                      decoration: InputDecoration(
-                        labelText: "Pronouns",
-                        labelStyle: TextStyle(
-                          color: Colors.grey.shade400,
-                          fontSize: 15,
-                        ),
-                      ),
+                      labelText: AppString.prononuns,
                     ),
                     SizedBox(height: screenHeight * 0.01),
-                    TextField(
+                    EditTextField(
+                      labelText: AppString.bio,
                       controller: _controller.bioController,
-                      decoration: InputDecoration(
-                        labelText: "Bio",
-                        labelStyle: TextStyle(
-                          color: Colors.grey.shade400,
-                          fontSize: 15,
-                        ),
-                      ),
                     ),
                     SizedBox(height: screenHeight * 0.02),
                     const Text("Add link", style: TextStyle(fontSize: 16)),
                     SizedBox(height: screenHeight * 0.03),
                     const Text("Add banners", style: TextStyle(fontSize: 16)),
-                    TextField(
-                      decoration: InputDecoration(
-                        suffixIcon:
-                            const Icon(Icons.arrow_forward_ios, size: 17),
-                        labelText: "Gender",
-                        labelStyle: TextStyle(
-                          color: Colors.grey.shade400,
-                          fontSize: 15,
-                        ),
-                      ),
+                    EditTextField(
+                      suffixIcon: Icon(Icons.arrow_forward_ios, size: 17),
+                      labelText: AppString.gender,
                     ),
                     SizedBox(height: screenHeight * 0.02),
                     Obx(() {

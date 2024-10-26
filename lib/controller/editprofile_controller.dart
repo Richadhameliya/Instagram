@@ -51,27 +51,89 @@ class EditProfileController extends GetxController {
     }
   }
 
+  // Future<void> pickImage() async {
+  //   final ImagePicker picker = ImagePicker();
+  //   final XFile? pickedFile = await Get.defaultDialog<XFile?>(
+  //     title: 'Choose Image Source',
+  //     content: Column(
+  //       children: [
+  //         TextButton(
+  //           onPressed: () async {
+  //             Get.back(
+  //                 result: await picker.pickImage(source: ImageSource.camera));
+  //           },
+  //           child: const Icon(
+  //             CupertinoIcons.camera,
+  //             color: Colors.black,
+  //           ),
+  //         ),
+  //         TextButton(
+  //           onPressed: () async {
+  //             Get.back(
+  //                 result: await picker.pickImage(source: ImageSource.gallery));
+  //           },
+  //           child: const Icon(
+  //             Icons.image_outlined,
+  //             color: Colors.black,
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  //
+  //   if (pickedFile != null) {
+  //     image.value = File(pickedFile.path);
+  //     await uploadImageToFirebase();
+  //   }
+  // }
+
   Future<void> pickImage() async {
     final ImagePicker picker = ImagePicker();
-    final XFile? pickedFile = await Get.defaultDialog<XFile?>(
-      title: 'Choose Image Source',
-      content: Column(
-        children: [
-          TextButton(
-            onPressed: () async {
-              Get.back(
-                  result: await picker.pickImage(source: ImageSource.camera));
-            },
-            child: const Text('Camera'),
-          ),
-          TextButton(
-            onPressed: () async {
-              Get.back(
-                  result: await picker.pickImage(source: ImageSource.gallery));
-            },
-            child: const Text('Gallery'),
-          ),
-        ],
+
+    // Open bottom sheet instead of dialog
+    final XFile? pickedFile = await Get.bottomSheet<XFile?>(
+      backgroundColor: Colors.white,
+      Container(
+        height: 150,
+        width: 430,
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                TextButton(
+                  onPressed: () async {
+                    Get.back(
+                        result:
+                            await picker.pickImage(source: ImageSource.camera));
+                  },
+                  child: const Icon(
+                    CupertinoIcons.camera,
+                    color: Colors.black,
+                  ),
+                ),
+                Text("Go to the Camera")
+              ],
+            ),
+            Row(
+              children: [
+                TextButton(
+                  onPressed: () async {
+                    Get.back(
+                        result: await picker.pickImage(
+                            source: ImageSource.gallery));
+                  },
+                  child: const Icon(
+                    Icons.image_outlined,
+                    color: Colors.black,
+                  ),
+                ),
+                Text("Go to the Gallery")
+              ],
+            ),
+          ],
+        ),
       ),
     );
 

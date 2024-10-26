@@ -15,7 +15,7 @@ class LoginController extends GetxController {
   final _formKey = GlobalKey<FormState>();
   GetStorage box = GetStorage();
 
-  Future<void> login(BuildContext context) async {
+  void login(BuildContext context, String email, String password) async {
     if (_formKey.currentState?.validate() ?? false) {
       String email = _emailController.text.trim();
       String password = _passwordController.text.trim();

@@ -50,4 +50,14 @@ class AppString {
   static const comment = "Comments";
   static const typeComment = "Type your comment...";
   static const unKnownUser = "UnKnown USer";
+  static const userNotAuthenticated = "User not authenticated";
+  static const imageUploadedSuccessfully = "Image uploaded successfully!";
+  static const videoUploadedSuccessfully = "Video uploaded successfully!";
+  static const errorUploadingMedia = "Error uploading media:";
+  static const noPostYet = "No posts yet";
+  static const photosAndVideosOfYou = "photos and videos of you";
+  static const profileTagTxt =
+      "When people tag you in photos and videos, they`ll";
+  static const unSupportedFileType = "Unsupported file type";
+  static const appearHere = "appear here.";
 }

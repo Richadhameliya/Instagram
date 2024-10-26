@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:instagram_app/constant/app_assets.dart';
 import 'package:instagram_app/controller/register_controller.dart';
-
+import 'package:instagram_app/helper/helper.dart';
+import 'package:instagram_app/widget/app_button.dart';
+import 'package:instagram_app/widget/app_txtfeild.dart';
 import '../../constant/app_string.dart';
 import '../main/bottombar/bottom_bar.dart';
 import 'login_screen.dart';
@@ -17,6 +18,49 @@ class RegistrationScreen extends StatelessWidget {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  Future<void> _registerUser(BuildContext context) async {
+    if (_formKey.currentState?.validate() ?? false) {
+      String email = _emailController.text.trim();
+      String username = _usernameController.text.trim();
+      String password = _passwordController.text.trim();
+
+      try {
+        UserCredential userCredential =
+            await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
+
+        final User? user = userCredential.user;
+        if (user != null) {
+          await FirebaseFirestore.instance
+              .collection('InstaUser')
+              .doc(user.uid)
+              .set({
+            'email': email,
+            'username': username,
+            'pronouns': '',
+            'bio': '',
+            'imageUrl': '',
+          });
+
+          Helper.dialogCall.showToast(context, AppString.registrationSuccessful,
+              Colors.black, Colors.white);
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => BottomNavBar(),
+            ),
+          );
+        }
+      } catch (e) {
+        Helper.dialogCall.showToast(
+            context, '${AppString.error}: $e', Colors.black, Colors.white);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,15 +102,9 @@ class RegistrationScreen extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   SizedBox(height: screenSize.height * 0.02),
-                  TextFormField(
+                  LoginTextField(
                     controller: _emailController,
-                    decoration: InputDecoration(
-                      hintText: AppString.email,
-                      border: OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(screenSize.width * 0.03),
-                      ),
-                    ),
+                    hintText: AppString.email,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return AppString.pleaseEnterAnEmail;
@@ -78,15 +116,9 @@ class RegistrationScreen extends StatelessWidget {
                     },
                   ),
                   SizedBox(height: screenSize.height * 0.01),
-                  TextFormField(
+                  LoginTextField(
                     controller: _usernameController,
-                    decoration: InputDecoration(
-                      hintText: AppString.username,
-                      border: OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(screenSize.width * 0.03),
-                      ),
-                    ),
+                    hintText: AppString.username,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return AppString.pleaseEnterAUsername;
@@ -95,16 +127,10 @@ class RegistrationScreen extends StatelessWidget {
                     },
                   ),
                   SizedBox(height: screenSize.height * 0.01),
-                  TextFormField(
+                  LoginTextField(
                     controller: _passwordController,
                     obscureText: true,
-                    decoration: InputDecoration(
-                      hintText: AppString.password,
-                      border: OutlineInputBorder(
-                        borderRadius:
-                            BorderRadius.circular(screenSize.width * 0.03),
-                      ),
-                    ),
+                    hintText: AppString.password,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return AppString.pleaseEnterAPassword;
@@ -116,22 +142,9 @@ class RegistrationScreen extends StatelessWidget {
                     },
                   ),
                   SizedBox(height: screenSize.height * 0.02),
-                  MaterialButton(
-                    child: Text(
-                      AppString.signup,
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: screenSize.width * 0.05),
-                    ),
-                    height: screenSize.height * 0.07,
-                    minWidth: screenSize.width * 0.9,
-                    color: Colors.lightBlue,
-                    shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(screenSize.width * 0.07),
-                    ),
-                    onPressed: () => registerController.registerUser(context),
-                  ),
+                  LoginButton(
+                      appTile: AppString.signup,
+                      onTap: () => _registerUser(context)),
                   SizedBox(height: screenSize.height * 0.01),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

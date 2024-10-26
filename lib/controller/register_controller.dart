@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:instagram_app/helper/helper.dart';
 
 import '../constant/app_string.dart';
 import '../ui/main/bottombar/bottom_bar.dart';
@@ -39,14 +40,8 @@ class RegisterController extends GetxController {
             'imageUrl': '',
           });
 
-          Fluttertoast.showToast(
-            msg: AppString.registrationSuccessful,
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.BOTTOM,
-            backgroundColor: Colors.black,
-            textColor: Colors.white,
-            fontSize: 16.0,
-          );
+          Helper.dialogCall.showToast(context, AppString.registrationSuccessful,
+              Colors.black, Colors.white);
 
           Navigator.pushReplacement(
             context,
@@ -56,14 +51,8 @@ class RegisterController extends GetxController {
           );
         }
       } catch (e) {
-        Fluttertoast.showToast(
-          msg: '${AppString.error}: $e',
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          backgroundColor: Colors.black,
-          textColor: Colors.white,
-          fontSize: 16.0,
-        );
+        Helper.dialogCall.showToast(
+            context, '${AppString.error}: $e', Colors.black, Colors.white);
       }
     }
   }
